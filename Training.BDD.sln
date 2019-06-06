@@ -1,11 +1,16 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.489
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29001.49
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Training.BDD", "Training.BDD\Training.BDD.csproj", "{F8A53512-C9ED-4DAE-8BE6-FE99AFB51211}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Training.BDD", "Training.BDD\Training.BDD.csproj", "{F8A53512-C9ED-4DAE-8BE6-FE99AFB51211}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Training.BDD.Tests", "Training.BDD.Tests\Training.BDD.Tests.csproj", "{0CBB0085-97D1-4533-9571-AFA18620B3C5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Training.BDD.Tests", "Training.BDD.Tests\Training.BDD.Tests.csproj", "{0CBB0085-97D1-4533-9571-AFA18620B3C5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CB9F6179-69F0-41F7-A422-92309E7EF063}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
