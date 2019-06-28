@@ -159,26 +159,30 @@ testRunner.Then("le virement est refusé pour motif plafond dépassé", ((string
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Virement plafonné​")]
         [NUnit.Framework.CategoryAttribute("RG3")]
+        [NUnit.Framework.CategoryAttribute("null")]
+        [NUnit.Framework.CategoryAttribute("value")]
         public virtual void VirementPlafonne()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Virement plafonné​", null, new string[] {
-                        "RG3"});
-#line 41
+                        "RG3",
+                        "null",
+                        "value"});
+#line 42
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
-#line 42
-testRunner.Given("j\'ai un compte cheque avec un solde de 1000€​", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 43
-testRunner.Given("j\'ai un compte épargne avec un solde de 0€​", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+testRunner.Given("j\'ai un compte cheque avec un solde de 1000€​", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 44
-testRunner.Given("la limite de virement est 500€​", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+testRunner.Given("j\'ai un compte épargne avec un solde de 0€​", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 45
-testRunner.When("j\'effectue un virement de 501€ du compte cheque vers le compte épargne", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+testRunner.Given("la limite de virement est 500€​", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 46
-testRunner.Then("le solde du compte cheque est 1000€​", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+testRunner.When("j\'effectue un virement de 501€ du compte cheque vers le compte épargne", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line 47
-testRunner.Then("le solde du compte épargne est 0€​", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+testRunner.Then("le solde du compte cheque est 1000€​", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line 48
+testRunner.Then("le solde du compte épargne est 0€​", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line 49
 testRunner.Then("le virement est refusé pour motif plafond dépassé", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();

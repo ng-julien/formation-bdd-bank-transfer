@@ -1,18 +1,29 @@
 ﻿namespace Training.BDD.Tests
 {
+    using System.Linq;
+
     using Shouldly;
 
     using TechTalk.SpecFlow;
+    using TechTalk.SpecFlow.Assist;
+    using TechTalk.SpecFlow.Assist.ValueRetrievers;
 
     [Binding]
     public class GestionDesVirementsSteps
     {
+        private readonly ScenarioContext scenarioContext;
+
+        public GestionDesVirementsSteps(ScenarioContext scenarioContext)
+        {
+            this.scenarioContext = scenarioContext;
+        }
+
         private CreditBankAccount creditBankAccount;
 
         private DebitBankAccount debitBankAccount;
 
         private StateTransfer stateTransfer;
-
+        
         [Given(@"j'ai un compte cheque avec un solde de (.*)€​")]
         public void GivenJAiUnCompteChequeAvecUnSoldeDe(uint soldInitial)
         {
