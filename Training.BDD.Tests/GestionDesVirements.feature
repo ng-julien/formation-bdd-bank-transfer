@@ -37,7 +37,6 @@ Then le solde du compte épargne est 0€​
 Then le virement est refusé pour motif plafond dépassé
 
 @RG3
-@null value
 # RG3 prioritaire sur la RG2
 Scenario: Virement plafonné​
 Given j'ai un compte cheque avec un solde de 1000€​
