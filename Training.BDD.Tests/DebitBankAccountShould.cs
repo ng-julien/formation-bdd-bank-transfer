@@ -6,93 +6,95 @@
 
     using Shouldly;
 
+    using Types;
+
     public class DebitBankAccountShould
     {
         [Test]
         public void ReturnCreditStateOfTransferWhenCallDebitAndDebitAccountHaveProvisionAndAmountNotExceededLimit()
         {
-            const uint amountToBeDebited = 100;
+            var amountToBeDebited = new Amount(100);
             var creditMock = new Mock<Credit>();
             creditMock.Setup(credit => credit(amountToBeDebited))
-                      .Returns(StateTransfer.Fail).Verifiable();
-            var debitBankAccount = new DebitBankAccount(300);
+                      .Returns(new CreditBankAccount(new Amount(0), TransferState.Fail)).Verifiable();
+            var debitBankAccount = new DebitBankAccount(new Amount(300));
 
-            var actualState = debitBankAccount.Debit(amountToBeDebited, creditMock.Object);
+            var actual = debitBankAccount.Debit(amountToBeDebited, creditMock.Object);
 
             creditMock.Verify();
-            actualState.ShouldBe(StateTransfer.Fail);
+            actual.TransferState.ShouldBe(TransferState.Fail);
         }
 
         [Test]
         public void
             ReturnCreditStateOfTransferWhenCallDebitAndDebitAccountHaveProvisionAndAmountNotExceededLimitAndCreditIsSuccess()
         {
-            const uint amountToBeDebited = 100;
+            var amountToBeDebited = new Amount(100);
             var creditMock = new Mock<Credit>();
             creditMock.Setup(credit => credit(amountToBeDebited))
-                      .Returns(StateTransfer.Success).Verifiable();
-            var debitBankAccount = new DebitBankAccount(300);
+                      .Returns(new CreditBankAccount(new Amount(0), TransferState.Success)).Verifiable();
+            var debitBankAccount = new DebitBankAccount(new Amount(300));
 
-            var actualState = debitBankAccount.Debit(amountToBeDebited, creditMock.Object);
+            var actual = debitBankAccount.Debit(amountToBeDebited, creditMock.Object);
 
             creditMock.Verify();
-            actualState.ShouldBe(StateTransfer.Success);
+            actual.TransferState.ShouldBe(TransferState.Success);
         }
 
         [Test]
         public void ReturnLimitTransferIsEqual400ByDefault()
         {
-            const uint amountToBeDebited = 401;
+            var amountToBeDebited = new Amount(401);
             var creditMock = new Mock<Credit>();
-            var debitBankAccount = new DebitBankAccount(600);
+            var debitBankAccount = new DebitBankAccount(new Amount(600));
 
-            var actualState = debitBankAccount.Debit(amountToBeDebited, creditMock.Object);
+            var actual = debitBankAccount.Debit(amountToBeDebited, creditMock.Object);
 
-            actualState.ShouldBe(StateTransfer.LimitExceed);
-            creditMock.Verify(credit => credit(It.IsAny<uint>()), Times.Never);
+            actual.TransferState.ShouldBe(TransferState.LimitExceed);
+            creditMock.Verify(credit => credit(It.IsAny<Amount>()), Times.Never);
         }
 
         [Test]
         public void ReturnOutOfProvisionWhenFutureSoldIsLessThanZero()
         {
-            const uint amountToBeDebited = 301;
+            var amountToBeDebited = new Amount(301);
             var creditMock = new Mock<Credit>();
-            var debitBankAccount = new DebitBankAccount(300);
+            var debitBankAccount = new DebitBankAccount(new Amount(300));
 
-            var actualState = debitBankAccount.Debit(amountToBeDebited, creditMock.Object);
+            var actual = debitBankAccount.Debit(amountToBeDebited, creditMock.Object);
 
-            actualState.ShouldBe(StateTransfer.OutOfProvision);
-            creditMock.Verify(credit => credit(It.IsAny<uint>()), Times.Never);
+            actual.TransferState.ShouldBe(TransferState.OutOfProvision);
+            creditMock.Verify(credit => credit(It.IsAny<Amount>()), Times.Never);
         }
 
         [Test]
         public void SubtractSoldWhenCallDebitAndDebitAccountHaveProvisionAndAmountNotExceededLimitAndCreditIsSuccess()
         {
-            const uint expectedSold = 200;
-            const uint amountToBeDebited = 100;
+            var expectedSold = new Amount(200);
+            var amountToBeDebited = new Amount(100);
             var creditMock = new Mock<Credit>();
             creditMock.Setup(credit => credit(amountToBeDebited))
-                      .Returns(StateTransfer.Success);
-            var debitBankAccount = new DebitBankAccount(300);
+                      .Returns(new CreditBankAccount(Amount.Zero, TransferState.Success));
+            var debitBankAccount = new DebitBankAccount(new Amount(300));
 
-            debitBankAccount.Debit(amountToBeDebited, creditMock.Object);
+            var actual = debitBankAccount.Debit(amountToBeDebited, creditMock.Object);
 
-            debitBankAccount.Sold.ShouldBe(expectedSold);
+            actual.Balance.Value.ShouldBe(expectedSold.Value);
         }
 
         [Test]
         public void UnChangeSoldWhenCreditHasFailed()
         {
-            const uint expectedSold = 300;
-            const uint amountToBeDebited = 100;
+            var expectedSold = new Amount(300);
+            var amountToBeDebited = new Amount(100);
             var creditMock = new Mock<Credit>();
             creditMock.Setup(credit => credit(amountToBeDebited))
-                      .Returns(StateTransfer.Fail);
-            var debitBankAccount = new DebitBankAccount(300);
+                      .Returns(new CreditBankAccount(Amount.Zero, TransferState.Fail));
+            var debitBankAccount = new DebitBankAccount(new Amount(300));
 
-            debitBankAccount.Debit(amountToBeDebited, creditMock.Object);
+            var actual = debitBankAccount.Debit(amountToBeDebited, creditMock.Object);
 
-            debitBankAccount.Sold.ShouldBe(expectedSold);
+            actual.Balance.Value.ShouldBe(expectedSold.Value);
         }
     }
 }

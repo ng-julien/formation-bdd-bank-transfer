@@ -6,29 +6,31 @@
 
     using Shouldly;
 
+    using Types;
+
     public class CreditBankAccountShould
     {
         [Test]
         public void AddAmountToSoldWhenCallCredit()
         {
             uint expectedSold = 400;
-            uint amountToBeDebited = 100;
-            var creditBankAccount = new CreditBankAccount(300);
+            Amount amountToBeDebited = new Amount(100);
+            var creditBankAccount = new CreditBankAccount(new Amount(300));
 
-            creditBankAccount.Credit(amountToBeDebited);
+            var actual = creditBankAccount.Credit(amountToBeDebited);
 
-            creditBankAccount.Sold.ShouldBe(expectedSold);
+            actual.Balance.Value.ShouldBe(expectedSold);
         }
 
         [Test]
         public void ReturnSuccessStateTransferWhenCallCredit()
         {
-            uint amountToBeDebited = 100;
-            var creditBankAccount = new CreditBankAccount(300);
+            var amountToBeDebited = new Amount(100);
+            var creditBankAccount = new CreditBankAccount(new Amount(300));
 
-            var actualState = creditBankAccount.Credit(amountToBeDebited);
+            var actual = creditBankAccount.Credit(amountToBeDebited);
 
-            actualState.ShouldBe(StateTransfer.Success);
+            actual.TransferState.ShouldBe(TransferState.Success);
         }
     }
 }

@@ -1,16 +1,17 @@
 ﻿namespace Training.BDD
 {
+    using Types;
+
     public class CreditBankAccount : BankAccount
     {
-        public CreditBankAccount(uint initialSold)
-            : base(initialSold)
+        public TransferState TransferState { get; }
+
+        public CreditBankAccount(Amount balance, TransferState transferState = TransferState.None)
+            : base(balance)
         {
+            this.TransferState = transferState;
         }
 
-        public StateTransfer Credit(uint amount)
-        {
-            this.Sold += amount;
-            return StateTransfer.Success;
-        }
+        public CreditBankAccount Credit(Amount amount) => new CreditBankAccount( this.Balance + amount, TransferState.Success);
     }
 }

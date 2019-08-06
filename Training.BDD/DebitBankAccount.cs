@@ -1,64 +1,60 @@
 ﻿namespace Training.BDD
 {
-    public delegate StateTransfer Credit(uint amount);
+    using Types;
+
+    public delegate CreditBankAccount Credit(Amount amount);
 
     public class DebitBankAccount : BankAccount
     {
-        private uint authorizedLimit;
+        private readonly Amount authorizedLimit;
 
-        public DebitBankAccount(uint initialSold)
-            : this(initialSold, 400)
+        public DebitBankAccount(Amount balance, TransferState transferState = TransferState.None)
+            : this(balance, transferState, new Amount(400))
         {
         }
 
-        public DebitBankAccount(uint initialSold, uint authorizedLimit)
-            : base(initialSold)
+        private DebitBankAccount(Amount balance, TransferState transferState, Amount authorizedLimit)
+            : base(balance)
         {
+            this.TransferState = transferState;
             this.authorizedLimit = authorizedLimit;
         }
 
-        public StateTransfer Debit(uint amountToBeDebited, Credit credit)
+        public TransferState TransferState { get; }
+
+        public DebitBankAccount Debit(Amount debit, Credit credit)
         {
-            if (ExceedTheAllowedLimit(amountToBeDebited, this.authorizedLimit))
+            if (ExceedTheAllowedLimit(debit, this.authorizedLimit))
             {
-                return StateTransfer.LimitExceed;
+                return new DebitBankAccount(this.Balance, TransferState.LimitExceed);
             }
 
-            if (IsOutOfProvision(this.Sold, amountToBeDebited, out var soldAfterDebit))
+            var balance = this.Balance.Subtract(debit);
+            if (IsOutOfProvision(balance))
             {
-                return StateTransfer.OutOfProvision;
+                return new DebitBankAccount(this.Balance, TransferState.OutOfProvision);
             }
 
-            var stateTransfer = credit(amountToBeDebited);
-            if (stateTransfer == StateTransfer.Success)
+            var creditBankAccount = credit(debit);
+            if (creditBankAccount.TransferState == TransferState.Success)
             {
-                this.Sold = soldAfterDebit.GetValueOrDefault();
+                return new DebitBankAccount(balance, TransferState.Success);
             }
 
-            return stateTransfer;
+            return new DebitBankAccount(this.Balance, creditBankAccount.TransferState);
         }
 
-        public void DefineAuthorizedLimit(uint newAuthorizedLimit)
+        public DebitBankAccount DefineAuthorizedLimit(Amount newLimit) =>
+            new DebitBankAccount(this.Balance, this.TransferState, newLimit);
+
+        private static bool ExceedTheAllowedLimit(Amount debit, Amount limit)
         {
-            this.authorizedLimit = newAuthorizedLimit;
+            return debit > limit;
         }
 
-        private static bool ExceedTheAllowedLimit(uint amountToBeDebited, uint authorizedLimit)
+        private static bool IsOutOfProvision(Amount balance)
         {
-            return amountToBeDebited > authorizedLimit;
-        }
-
-        private static bool IsOutOfProvision(uint sold, uint amountToBeDebited, out uint? soldAfterDebit)
-        {
-            soldAfterDebit = null;
-            int result = (int)sold - (int)amountToBeDebited;
-            if (result < 0)
-            {
-                return true;
-            }
-
-            soldAfterDebit = (uint)result;
-            return false;
+            return balance < Amount.Zero;
         }
     }
 }

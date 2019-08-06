@@ -1,12 +1,16 @@
 ﻿namespace Training.BDD
 {
-    public class BankAccount
+    using LanguageExt;
+
+    using Types;
+
+    public class BankAccount : Record<BankAccount>
     {
-        protected BankAccount(uint initialSold)
+        protected BankAccount(Amount balance)
         {
-            this.Sold = initialSold;
+            this.Balance = balance;
         }
 
-        public uint Sold { get; protected set; }
+        public Amount Balance { get; protected set; }
     }
 }
